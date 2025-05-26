@@ -5,11 +5,13 @@ st.set_page_config(page_title="Zahradní nabídka", page_icon="🌿", layout="ce
 
 st.markdown("<h1 style='color:green;'>Poptávka realizace zahrady</h1>", unsafe_allow_html=True)
 
-# Načti HTML komponentu jako string
-with open("email_sender.html", "r", encoding="utf-8") as f:
-    email_sender_html = f.read()
+# 1️⃣ Načti HTML komponentu EmailJS
+with open("email_sender.html", "r", encoding="utf-8") as file:
+    email_component = file.read()
 
-# Formulář
+components.html(email_component, height=100)
+
+# 2️⃣ Formulář
 with st.form("zahrada_form"):
     st.subheader("Základní informace")
     jmeno = st.text_input("Vaše jméno")
@@ -23,6 +25,7 @@ with st.form("zahrada_form"):
     odeslat = st.form_submit_button("Vypočítat nabídku a odeslat e-mail")
 
 if odeslat:
+    # 3️⃣ Výpočet ceny
     cena_travnik = plocha * 190
     cena_habry = pocet_habru * 150
     cena_zavlaha = 0
@@ -30,13 +33,13 @@ if odeslat:
         zavlaha_base = 3500
         zavlaha_extra = max(0, (plocha - 10) / 5) * 500
         cena_zavlaha = zavlaha_base + zavlaha_extra
-
     doprava = 5000
     prace = 400 * 8
     celkova_cena = cena_travnik + cena_habry + cena_zavlaha + doprava + prace
 
     st.success(f"Předběžná cena: {int(celkova_cena)} Kč")
 
+    # 4️⃣ Rekapitulace
     st.markdown(f"""
     **Jméno:** {jmeno}  
     **E-mail:** {email}  
@@ -49,4 +52,30 @@ if odeslat:
     **Celkem:** {int(celkova_cena)} Kč
     """)
 
-    # Vloži
+    # 5️⃣ Odeslání zprávy komponentě přes JavaScript (v <script> uvnitř iframe)
+    components.html(f"""
+        <script>
+          const payload = {{
+            jmeno: "{jmeno}",
+            email: "{email}",
+            lokalita: "{lokalita}",
+            plocha: "{plocha}",
+            pocet_habru: "{pocet_habru}",
+            zavlaha: "{'Ano' if zavlaha else 'Ne'}",
+            cena: "{int(celkova_cena)}"
+          }};
+          
+          // Pošli zprávu
+          window.parent.postMessage({{ type: "SEND_EMAIL", payload }}, "*");
+
+          // Poslouchej výsledek
+          window.addEventListener("message", function(event) {{
+            if (event.data === "SUCCESS") {{
+              alert("✅ E-mail byl úspěšně odeslán.");
+            }}
+            if (event.data === "ERROR") {{
+              alert("❌ Chyba při odesílání e-mailu.");
+            }}
+          }});
+        </script>
+    """, height=0)
