@@ -4,10 +4,9 @@
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
       (function(){
-        emailjs.init("jgIPteokbr7hfxXk_"); // USER ID
+        emailjs.init("jgIPteokbr7hfxXk_");
       })();
 
-      // ✅ Překryvný box – vlastní alert
       function showResult(msg, type) {
         const el = document.createElement("div");
         el.innerText = msg;
@@ -26,7 +25,6 @@
         setTimeout(() => document.body.removeChild(el), 4000);
       }
 
-      // ✅ Hlavní funkce odeslání
       function sendEmail(data) {
         showResult("🧪 Funkce sendEmail() byla spuštěna!", "success");
 
@@ -40,7 +38,6 @@
         });
       }
 
-      // ✅ Poslech zpráv ze Streamlitu
       window.addEventListener("message", function(event){
         if (event.data.type === "SEND_EMAIL") {
           sendEmail(event.data.payload);
@@ -49,7 +46,7 @@
     </script>
   </head>
   <body>
-    <p>✅ EmailJS komponenta nahrána</p>
+    <p>✅ EmailJS komponenta nahrána (verze 1.5)</p>
     <script>
       document.body.insertAdjacentHTML("beforeend", "<p id='debug'>🧪 JavaScript aktivní</p>");
     </script>
