@@ -5,7 +5,7 @@ st.set_page_config(page_title="Zahradní nabídka", page_icon="🌿", layout="ce
 
 st.markdown("<h1 style='color:green;'>Poptávka realizace zahrady</h1>", unsafe_allow_html=True)
 
-# HTML komponenta pro EmailJS
+# Načtení emailové HTML komponenty
 with open("email_sender.html", "r", encoding="utf-8") as file:
     email_component = file.read()
 
@@ -51,7 +51,7 @@ if odeslat:
     **Celkem:** {int(celkova_cena)} Kč
     """)
 
-    # JavaScript – odešle zprávu do iframe s daty
+    # Odeslání dat do email_sender komponenty (a hláška zpět)
     components.html(f"""
         <script>
           const payload = {{
@@ -64,5 +64,15 @@ if odeslat:
             cena: "{int(celkova_cena)}"
           }};
           window.parent.postMessage({{ type: "SEND_EMAIL", payload }}, "*");
+
+          // Poslech výsledku
+          window.addEventListener("message", function(event) {{
+            if (event.data === "SUCCESS") {{
+              alert("✅ E-mail byl úspěšně odeslán.");
+            }}
+            if (event.data === "ERROR") {{
+              alert("❌ Chyba při odesílání e-mailu. Zkontroluj EmailJS nastavení.");
+            }}
+          }}, false);
         </script>
     """, height=0)
