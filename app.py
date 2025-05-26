@@ -5,6 +5,10 @@ st.set_page_config(page_title="Zahradní nabídka", page_icon="🌿", layout="ce
 
 st.markdown("<h1 style='color:green;'>Poptávka realizace zahrady</h1>", unsafe_allow_html=True)
 
+# Načti HTML komponentu jako string
+with open("email_sender.html", "r", encoding="utf-8") as f:
+    email_sender_html = f.read()
+
 # Formulář
 with st.form("zahrada_form"):
     st.subheader("Základní informace")
@@ -45,30 +49,4 @@ if odeslat:
     **Celkem:** {int(celkova_cena)} Kč
     """)
 
-    # Vložíme komponentu s iframe + postMessage
-    components.html(f"""
-    <iframe id="senderFrame" src="email_sender.html" style="display:none;" onload="
-        const payload = {{
-            jmeno: '{jmeno}',
-            email: '{email}',
-            lokalita: '{lokalita}',
-            plocha: '{plocha}',
-            pocet_habru: '{pocet_habru}',
-            zavlaha: '{'Ano' if zavlaha else 'Ne'}',
-            cena: '{int(celkova_cena)}'
-        }};
-        setTimeout(() => {{
-            const iframe = document.getElementById('senderFrame');
-            iframe.contentWindow.postMessage({{ type: 'SEND_EMAIL', payload }}, '*');
-        }}, 1000);
-
-        window.addEventListener('message', function(event) {{
-            if (event.data === 'SUCCESS') {{
-                alert('✅ E-mail byl úspěšně odeslán.');
-            }}
-            if (event.data === 'ERROR') {{
-                alert('❌ Chyba při odeslání e-mailu.');
-            }}
-        }});
-    "></iframe>
-    """, height=0)
+    # Vloži
