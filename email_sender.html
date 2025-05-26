@@ -13,6 +13,9 @@
    alert("✅ E-mail odeslán:\n" + JSON.stringify(response));
    window.parent.postMessage("SUCCESS", "*");
 }, function sendEmail(data) {
+  alert("🧪 Funkce sendEmail() byla spuštěna!");
+  console.log("Data přijata:", data);
+
   emailjs.send("gmail", "template_sfiw4ow", data)
   .then(function(response) {
      alert("✅ E-mail odeslán:\n" + JSON.stringify(response));
