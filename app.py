@@ -1,6 +1,4 @@
 import streamlit as st
-import datetime
-import pdfkit
 
 st.set_page_config(page_title="Zahradní nabídka", page_icon="🌿", layout="centered")
 
@@ -28,20 +26,19 @@ if odeslat:
         cena_zavlaha = zavlaha_base + zavlaha_extra
 
     doprava = 5000
-    prace = 400 * 8  # základní odhad 8 hodin
+    prace = 400 * 8
 
     celkova_cena = cena_travnik + cena_habry + cena_zavlaha + doprava + prace
 
     st.success(f"Předběžná cena: {int(celkova_cena)} Kč")
 
-    st.markdown(f"**Jméno:** {jmeno}  \n"
-                f"**E-mail:** {email}  \n"
-                f"**Trávník:** {plocha} m² → {int(cena_travnik)} Kč  \n"
-                f"**Habry:** {pocet_habru} ks → {int(cena_habry)} Kč  \n"
-                f"**Závlaha:** {'Ano' if zavlaha else 'Ne'} → {int(cena_zavlaha)} Kč  \n"
-                f"**Doprava:** {doprava} Kč  \n"
-                f"**Práce zahradníka:** {prace} Kč  \n"
-                f"**Celkem:** {int(celkova_cena)} Kč")
-
-    st.markdown("---")
-    st.info("Brzy obdržíte tuto nabídku také e-mailem ve formátu PDF.")
+    st.markdown(f"""
+    **Jméno:** {jmeno}  
+    **E-mail:** {email}  
+    **Trávník:** {plocha} m² → {int(cena_travnik)} Kč  
+    **Habry:** {pocet_habru} ks → {int(cena_habry)} Kč  
+    **Závlaha:** {'Ano' if zavlaha else 'Ne'} → {int(cena_zavlaha)} Kč  
+    **Doprava:** {doprava} Kč  
+    **Práce zahradníka:** {prace} Kč  
+    **Celkem:** {int(celkova_cena)} Kč
+    """)
