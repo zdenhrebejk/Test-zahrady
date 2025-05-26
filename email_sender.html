@@ -9,12 +9,13 @@
 
       function sendEmail(data) {
         emailjs.send("gmail", "template_sfiw4ow", data)
-        .then(function(response) {
-           window.parent.postMessage("SUCCESS", "*");
-        }, function(error) {
-           window.parent.postMessage("ERROR", "*");
-        });
-      }
+.then(function(response) {
+   alert("✅ E-mail odeslán:\n" + JSON.stringify(response));
+   window.parent.postMessage("SUCCESS", "*");
+}, function(error) {
+   alert("❌ Chyba při odesílání:\n" + JSON.stringify(error));
+   window.parent.postMessage("ERROR", "*");
+});
 
       window.addEventListener("message", function(event){
         if (event.data.type === "SEND_EMAIL") {
