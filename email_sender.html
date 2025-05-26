@@ -7,20 +7,40 @@
         emailjs.init("jgIPteokbr7hfxXk_"); // USER ID
       })();
 
+      // ✅ Překryvný box – vlastní alert
+      function showResult(msg, type) {
+        const el = document.createElement("div");
+        el.innerText = msg;
+        el.style.position = "fixed";
+        el.style.top = "20px";
+        el.style.left = "50%";
+        el.style.transform = "translateX(-50%)";
+        el.style.padding = "10px 20px";
+        el.style.backgroundColor = type === "success" ? "#2ecc71" : "#e74c3c";
+        el.style.color = "white";
+        el.style.fontWeight = "bold";
+        el.style.zIndex = 1000;
+        el.style.borderRadius = "8px";
+        el.style.boxShadow = "0 4px 8px rgba(0,0,0,0.3)";
+        document.body.appendChild(el);
+        setTimeout(() => document.body.removeChild(el), 4000);
+      }
+
+      // ✅ Hlavní funkce odeslání
       function sendEmail(data) {
-        alert("🧪 Funkce sendEmail() byla spuštěna!");
-        console.log("Data přijata:", data);
+        showResult("🧪 Funkce sendEmail() byla spuštěna!", "success");
 
         emailjs.send("gmail", "template_sfiw4ow", data)
         .then(function(response) {
-           alert("✅ E-mail odeslán:\n" + JSON.stringify(response));
-           window.parent.postMessage("SUCCESS", "*");
+          showResult("✅ E-mail odeslán!", "success");
+          window.parent.postMessage("SUCCESS", "*");
         }, function(error) {
-           alert("❌ Chyba při odesílání:\n" + JSON.stringify(error));
-           window.parent.postMessage("ERROR", "*");
+          showResult("❌ Chyba při odesílání!", "error");
+          window.parent.postMessage("ERROR", "*");
         });
       }
 
+      // ✅ Poslech zpráv ze Streamlitu
       window.addEventListener("message", function(event){
         if (event.data.type === "SEND_EMAIL") {
           sendEmail(event.data.payload);
