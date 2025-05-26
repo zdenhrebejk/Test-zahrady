@@ -4,11 +4,11 @@
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
       (function(){
-        emailjs.init("YOUR_USER_ID"); // ← sem doplň svůj USER ID z EmailJS
+        emailjs.init("jgIPteokbr7hfxXk_"); // ← sem doplň svůj USER ID z EmailJS
       })();
 
       function sendEmail(data) {
-        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", data)
+        emailjs.send("gmail", "zahrada_nabidka", data)
         .then(function(response) {
            window.parent.postMessage("SUCCESS", "*");
         }, function(error) {
