@@ -5,12 +5,7 @@ st.set_page_config(page_title="Zahradní nabídka", page_icon="🌿", layout="ce
 
 st.markdown("<h1 style='color:green;'>Poptávka realizace zahrady</h1>", unsafe_allow_html=True)
 
-# Načtení emailové HTML komponenty
-with open("email_sender.html", "r", encoding="utf-8") as file:
-    email_component = file.read()
-
-components.html(email_component, height=100)
-
+# Formulář
 with st.form("zahrada_form"):
     st.subheader("Základní informace")
     jmeno = st.text_input("Vaše jméno")
@@ -34,7 +29,6 @@ if odeslat:
 
     doprava = 5000
     prace = 400 * 8
-
     celkova_cena = cena_travnik + cena_habry + cena_zavlaha + doprava + prace
 
     st.success(f"Předběžná cena: {int(celkova_cena)} Kč")
@@ -51,28 +45,30 @@ if odeslat:
     **Celkem:** {int(celkova_cena)} Kč
     """)
 
-    # Odeslání dat do email_sender komponenty (a hláška zpět)
+    # Vložíme komponentu s iframe + postMessage
     components.html(f"""
-        <script>
-          const payload = {{
-            jmeno: "{jmeno}",
-            email: "{email}",
-            lokalita: "{lokalita}",
-            plocha: "{plocha}",
-            pocet_habru: "{pocet_habru}",
-            zavlaha: "{'Ano' if zavlaha else 'Ne'}",
-            cena: "{int(celkova_cena)}"
-          }};
-          window.parent.postMessage({{ type: "SEND_EMAIL", payload }}, "*");
+    <iframe id="senderFrame" src="email_sender.html" style="display:none;" onload="
+        const payload = {{
+            jmeno: '{jmeno}',
+            email: '{email}',
+            lokalita: '{lokalita}',
+            plocha: '{plocha}',
+            pocet_habru: '{pocet_habru}',
+            zavlaha: '{'Ano' if zavlaha else 'Ne'}',
+            cena: '{int(celkova_cena)}'
+        }};
+        setTimeout(() => {{
+            const iframe = document.getElementById('senderFrame');
+            iframe.contentWindow.postMessage({{ type: 'SEND_EMAIL', payload }}, '*');
+        }}, 1000);
 
-          // Poslech výsledku
-          window.addEventListener("message", function(event) {{
-            if (event.data === "SUCCESS") {{
-              alert("✅ E-mail byl úspěšně odeslán.");
+        window.addEventListener('message', function(event) {{
+            if (event.data === 'SUCCESS') {{
+                alert('✅ E-mail byl úspěšně odeslán.');
             }}
-            if (event.data === "ERROR") {{
-              alert("❌ Chyba při odesílání e-mailu. Zkontroluj EmailJS nastavení.");
+            if (event.data === 'ERROR') {{
+                alert('❌ Chyba při odeslání e-mailu.');
             }}
-          }}, false);
-        </script>
+        }});
+    "></iframe>
     """, height=0)
