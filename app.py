@@ -59,7 +59,7 @@ if odeslat:
             email: "{email}",
             lokalita: "{lokalita}",
             plocha: "{plocha}",
-            habry: "{pocet_habru}",
+            pocet_habru: "{pocet_habru}",
             zavlaha: "{'Ano' if zavlaha else 'Ne'}",
             cena: "{int(celkova_cena)}"
           }};
