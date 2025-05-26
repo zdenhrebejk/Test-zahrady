@@ -8,7 +8,7 @@
       })();
 
       function sendEmail(data) {
-        emailjs.send("gmail", "zahrada_nabidka", data)
+        emailjs.send("gmail", "template_sfiw4ow", data)
         .then(function(response) {
            window.parent.postMessage("SUCCESS", "*");
         }, function(error) {
