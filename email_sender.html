@@ -7,58 +7,37 @@
         emailjs.init("jgIPteokbr7hfxXk_");
       })();
 
+      // Překryvný box pro zprávy
       function showResult(msg, type) {
-  const el = document.createElement("div");
-  el.innerText = msg;
+        console.log("📣 showResult spuštěn s textem:", msg);
 
-  el.style.position = "fixed";
-  el.style.top = "30px";
-  el.style.left = "50%";
-  el.style.transform = "translateX(-50%)";
-  el.style.padding = "14px 24px";
-  el.style.backgroundColor = type === "success" ? "#28a745" : "#dc3545"; // zelená/červená
-  el.style.color = "#ffffff";
-  el.style.fontSize = "16px";
-  el.style.fontWeight = "bold";
-  el.style.fontFamily = "sans-serif";
-  el.style.borderRadius = "8px";
-  el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
-  el.style.zIndex = 9999;
-  el.style.opacity = 1;
-  el.style.transition = "opacity 0.5s ease";
+        const el = document.createElement("div");
+        el.innerText = msg;
 
-  document.body.appendChild(el);
+        el.style.position = "fixed";
+        el.style.top = "30px";
+        el.style.left = "50%";
+        el.style.transform = "translateX(-50%)";
+        el.style.padding = "14px 24px";
+        el.style.backgroundColor = type === "success" ? "#28a745" : "#dc3545";
+        el.style.color = "#ffffff";
+        el.style.fontSize = "16px";
+        el.style.fontWeight = "bold";
+        el.style.fontFamily = "sans-serif";
+        el.style.borderRadius = "8px";
+        el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
+        el.style.zIndex = 9999;
+        el.style.opacity = 1;
+        el.style.transition = "opacity 0.5s ease";
 
-  setTimeout(() => {
-    el.style.opacity = 0;
-    setTimeout(() => document.body.removeChild(el), 500);
-  }, 4000);
-}
+        document.body.appendChild(el);
 
-      function sendEmail(data) {
-        showResult("🧪 Funkce sendEmail() byla spuštěna!", "success");
-
-        emailjs.send("gmail", "template_sfiw4ow", data)
-        .then(function(response) {
-          showResult("✅ E-mail odeslán!", "success");
-          window.parent.postMessage("SUCCESS", "*");
-        }, function(error) {
-          showResult("❌ Chyba při odesílání!", "error");
-          window.parent.postMessage("ERROR", "*");
-        });
+        setTimeout(() => {
+          el.style.opacity = 0;
+          setTimeout(() => document.body.removeChild(el), 500);
+        }, 4000);
       }
 
-      window.addEventListener("message", function(event){
-        if (event.data.type === "SEND_EMAIL") {
-          sendEmail(event.data.payload);
-        }
-      }, false);
-    </script>
-  </head>
-  <body>
-    <p>✅ EmailJS komponenta nahrána (verze 1.5)</p>
-    <script>
-      document.body.insertAdjacentHTML("beforeend", "<p id='debug'>🧪 JavaScript aktivní</p>");
-    </script>
-  </body>
-</html>
+      // Odeslání e-mailu přes EmailJS
+      function sendEmail(data) {
+        console.log("📩 sendEmail přijím
