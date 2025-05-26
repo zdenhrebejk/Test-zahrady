@@ -8,22 +8,32 @@
       })();
 
       function showResult(msg, type) {
-        const el = document.createElement("div");
-        el.innerText = msg;
-        el.style.position = "fixed";
-        el.style.top = "20px";
-        el.style.left = "50%";
-        el.style.transform = "translateX(-50%)";
-        el.style.padding = "10px 20px";
-        el.style.backgroundColor = type === "success" ? "#2ecc71" : "#e74c3c";
-        el.style.color = "white";
-        el.style.fontWeight = "bold";
-        el.style.zIndex = 1000;
-        el.style.borderRadius = "8px";
-        el.style.boxShadow = "0 4px 8px rgba(0,0,0,0.3)";
-        document.body.appendChild(el);
-        setTimeout(() => document.body.removeChild(el), 4000);
-      }
+  const el = document.createElement("div");
+  el.innerText = msg;
+
+  el.style.position = "fixed";
+  el.style.top = "30px";
+  el.style.left = "50%";
+  el.style.transform = "translateX(-50%)";
+  el.style.padding = "14px 24px";
+  el.style.backgroundColor = type === "success" ? "#28a745" : "#dc3545"; // zelená/červená
+  el.style.color = "#ffffff";
+  el.style.fontSize = "16px";
+  el.style.fontWeight = "bold";
+  el.style.fontFamily = "sans-serif";
+  el.style.borderRadius = "8px";
+  el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
+  el.style.zIndex = 9999;
+  el.style.opacity = 1;
+  el.style.transition = "opacity 0.5s ease";
+
+  document.body.appendChild(el);
+
+  setTimeout(() => {
+    el.style.opacity = 0;
+    setTimeout(() => document.body.removeChild(el), 500);
+  }, 4000);
+}
 
       function sendEmail(data) {
         showResult("🧪 Funkce sendEmail() byla spuštěna!", "success");
