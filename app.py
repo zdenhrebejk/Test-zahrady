@@ -5,13 +5,9 @@ st.set_page_config(page_title="Zahradní nabídka", page_icon="🌿", layout="ce
 
 st.markdown("<h1 style='color:green;'>Poptávka realizace zahrady</h1>", unsafe_allow_html=True)
 
-# 1️⃣ Načti HTML komponentu EmailJS
-with open("email_sender.html", "r", encoding="utf-8") as file:
-    email_component = file.read()
+# Nezobrazujeme email_sender.html jako iframe samostatně
+# s komponentou níže s ním budeme komunikovat přímo
 
-components.html(email_component, height=100)
-
-# 2️⃣ Formulář
 with st.form("zahrada_form"):
     st.subheader("Základní informace")
     jmeno = st.text_input("Vaše jméno")
@@ -25,7 +21,7 @@ with st.form("zahrada_form"):
     odeslat = st.form_submit_button("Vypočítat nabídku a odeslat e-mail")
 
 if odeslat:
-    # 3️⃣ Výpočet ceny
+    # Výpočty
     cena_travnik = plocha * 190
     cena_habry = pocet_habru * 150
     cena_zavlaha = 0
@@ -39,7 +35,7 @@ if odeslat:
 
     st.success(f"Předběžná cena: {int(celkova_cena)} Kč")
 
-    # 4️⃣ Rekapitulace
+    # Rekapitulace
     st.markdown(f"""
     **Jméno:** {jmeno}  
     **E-mail:** {email}  
@@ -52,30 +48,34 @@ if odeslat:
     **Celkem:** {int(celkova_cena)} Kč
     """)
 
-    # 5️⃣ Odeslání zprávy komponentě přes JavaScript (v <script> uvnitř iframe)
+    # ✅ Vložení komponenty email_sender.html do iframe
+    components.iframe("email_sender.html", height=100)
+
+    # ✅ Poslání dat do stejného iframe
     components.html(f"""
         <script>
-          const payload = {{
-            jmeno: "{jmeno}",
-            email: "{email}",
-            lokalita: "{lokalita}",
-            plocha: "{plocha}",
-            pocet_habru: "{pocet_habru}",
-            zavlaha: "{'Ano' if zavlaha else 'Ne'}",
-            cena: "{int(celkova_cena)}"
-          }};
-          
-          // Pošli zprávu
-          window.parent.postMessage({{ type: "SEND_EMAIL", payload }}, "*");
+          const iframe = document.querySelector('iframe');
+          if (iframe) {{
+            const payload = {{
+              jmeno: "{jmeno}",
+              email: "{email}",
+              lokalita: "{lokalita}",
+              plocha: "{plocha}",
+              pocet_habru: "{pocet_habru}",
+              zavlaha: "{'Ano' if zavlaha else 'Ne'}",
+              cena: "{int(celkova_cena)}"
+            }};
+            iframe.contentWindow.postMessage({{ type: "SEND_EMAIL", payload }}, "*");
 
-          // Poslouchej výsledek
-          window.addEventListener("message", function(event) {{
-            if (event.data === "SUCCESS") {{
-              alert("✅ E-mail byl úspěšně odeslán.");
-            }}
-            if (event.data === "ERROR") {{
-              alert("❌ Chyba při odesílání e-mailu.");
-            }}
-          }});
+            // Poslouchej odpověď
+            window.addEventListener("message", function(event) {{
+              if (event.data === "SUCCESS") {{
+                alert("✅ E-mail byl úspěšně odeslán.");
+              }}
+              if (event.data === "ERROR") {{
+                alert("❌ Chyba při odeslání.");
+              }}
+            }});
+          }}
         </script>
     """, height=0)
