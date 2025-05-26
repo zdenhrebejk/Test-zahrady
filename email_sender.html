@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+      (function(){
+        emailjs.init("YOUR_USER_ID"); // ← sem doplň svůj USER ID z EmailJS
+      })();
+
+      function sendEmail(data) {
+        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", data)
+        .then(function(response) {
+           window.parent.postMessage("SUCCESS", "*");
+        }, function(error) {
+           window.parent.postMessage("ERROR", "*");
+        });
+      }
+
+      window.addEventListener("message", function(event){
+        if (event.data.type === "SEND_EMAIL") {
+          sendEmail(event.data.payload);
+        }
+      }, false);
+    </script>
+  </head>
+  <body>
+    <p>Komponenta připravená pro odeslání e-mailu přes EmailJS.</p>
+  </body>
+</html>
